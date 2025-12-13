@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Users, 
@@ -12,25 +13,30 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-interface SidebarProps {
-  activeTab: string;
-  onTabChange: (tab: string) => void;
-}
-
 const navItems = [
-  { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { id: 'leads', label: 'All Leads', icon: Users },
-  { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-  { id: 'settings', label: 'Settings', icon: Settings },
+  { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/' },
+  { id: 'leads', label: 'All Leads', icon: Users, path: '/alleads' },
+  { id: 'analytics', label: 'Analytics', icon: BarChart3, path: '/analytics' },
+  { id: 'settings', label: 'Settings', icon: Settings, path: '/settings' },
 ];
 
 const sourceItems = [
-  { id: 'website', label: 'Website', icon: Globe, color: 'text-source-website' },
-  { id: 'meta', label: 'Meta Ads', icon: Facebook, color: 'text-source-meta' },
-  { id: 'google', label: 'Google Ads', icon: Chrome, color: 'text-source-google' },
+  { id: 'website', label: 'Website', icon: Globe, color: 'text-source-website', path: '/leads/website' },
+  { id: 'meta', label: 'Meta Ads', icon: Facebook, color: 'text-source-meta', path: '/leads/meta' },
+  { id: 'google', label: 'Google Ads', icon: Chrome, color: 'text-source-google', path: '/leads/google' },
 ];
 
-export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
+export function Sidebar() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const isActive = (path: string) => {
+    if (path === '/') {
+      return location.pathname === '/';
+    }
+    return location.pathname === path;
+  };
+
   return (
     <aside className="fixed left-0 top-0 h-screen w-64 bg-sidebar text-sidebar-foreground flex flex-col z-50">
       {/* Logo */}
@@ -52,10 +58,10 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
         {navItems.map((item) => (
           <button
             key={item.id}
-            onClick={() => onTabChange(item.id)}
+            onClick={() => navigate(item.path)}
             className={cn(
               'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200',
-              activeTab === item.id
+              isActive(item.path)
                 ? 'bg-sidebar-accent text-primary'
                 : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
             )}
@@ -70,10 +76,10 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
           {sourceItems.map((item) => (
             <button
               key={item.id}
-              onClick={() => onTabChange(item.id)}
+              onClick={() => navigate(item.path)}
               className={cn(
                 'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200',
-                activeTab === item.id
+                isActive(item.path)
                   ? 'bg-sidebar-accent text-sidebar-foreground'
                   : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
               )}
