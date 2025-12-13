@@ -1,21 +1,15 @@
-import { ReactNode } from 'react';
+import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
 
-interface DashboardLayoutProps {
-  children: ReactNode;
-  activeTab: string;
-  onTabChange: (tab: string) => void;
-}
-
-export function DashboardLayout({ children, activeTab, onTabChange }: DashboardLayoutProps) {
+export function DashboardLayout() {
   return (
     <div className="min-h-screen bg-background">
-      <Sidebar activeTab={activeTab} onTabChange={onTabChange} />
+      <Sidebar />
       <div className="ml-64">
         <Header />
         <main className="p-6">
-          {children}
+          <Outlet />
         </main>
       </div>
     </div>
