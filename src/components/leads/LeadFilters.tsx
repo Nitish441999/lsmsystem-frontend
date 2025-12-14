@@ -1,4 +1,4 @@
-import { Filter, Download, Plus } from 'lucide-react';
+import { Filter, FileSpreadsheet, FileText, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -10,10 +10,48 @@ import {
 import { useAppDispatch, useAppSelector } from '@/hooks/useAppDispatch';
 import { setSourceFilter, setStatusFilter } from '@/store/leadSlice';
 import { LeadSource, LeadStatus } from '@/types/lead';
+import { exportToExcel, exportToPDF } from '@/lib/exportUtils';
+import { useLocation } from 'react-router-dom';
 
 export function LeadFilters() {
   const dispatch = useAppDispatch();
-  const { selectedSource, selectedStatus } = useAppSelector((state) => state.leads);
+  const location = useLocation();
+  const { selectedSource, selectedStatus, filteredLeads } = useAppSelector((state) => state.leads);
+
+  const getExportTitle = () => {
+    switch (location.pathname) {
+      case '/leads/website':
+        return 'Website Leads';
+      case '/leads/meta':
+        return 'Meta Ads Leads';
+      case '/leads/google':
+        return 'Google Ads Leads';
+      default:
+        return 'All Leads';
+    }
+  };
+
+  const getFilename = () => {
+    const date = new Date().toISOString().split('T')[0];
+    switch (location.pathname) {
+      case '/leads/website':
+        return `website-leads-${date}`;
+      case '/leads/meta':
+        return `meta-leads-${date}`;
+      case '/leads/google':
+        return `google-leads-${date}`;
+      default:
+        return `all-leads-${date}`;
+    }
+  };
+
+  const handleExportExcel = () => {
+    exportToExcel(filteredLeads, getFilename());
+  };
+
+  const handleExportPDF = () => {
+    exportToPDF(filteredLeads, getFilename(), getExportTitle());
+  };
 
   return (
     <div className="flex flex-wrap items-center gap-3">
@@ -55,9 +93,13 @@ export function LeadFilters() {
       </Select>
 
       <div className="ml-auto flex gap-2">
-        <Button variant="outline" size="sm">
-          <Download className="w-4 h-4 mr-2" />
-          Export
+        <Button variant="outline" size="sm" onClick={handleExportExcel}>
+          <FileSpreadsheet className="w-4 h-4 mr-2" />
+          Excel
+        </Button>
+        <Button variant="outline" size="sm" onClick={handleExportPDF}>
+          <FileText className="w-4 h-4 mr-2" />
+          PDF
         </Button>
         <Button size="sm">
           <Plus className="w-4 h-4 mr-2" />
