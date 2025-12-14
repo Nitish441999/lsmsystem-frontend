@@ -38,7 +38,7 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-64 bg-sidebar text-sidebar-foreground flex flex-col z-50">
+    <aside className="fixed left-0 top-0 h-screen w-64 bg-sidebar text-sidebar-foreground flex flex-col z-50 border-r border-sidebar-border">
       {/* Logo */}
       <div className="p-6 border-b border-sidebar-border">
         <div className="flex items-center gap-3">
@@ -46,14 +46,14 @@ export function Sidebar() {
             <Users className="w-5 h-5 text-primary-foreground" />
           </div>
           <div>
-            <h1 className="font-bold text-lg">LeadFlow</h1>
+            <h1 className="font-bold text-lg text-sidebar-foreground">LeadFlow</h1>
             <p className="text-xs text-sidebar-foreground/60">Management System</p>
           </div>
         </div>
       </div>
 
       {/* Main Navigation */}
-      <nav className="flex-1 p-4 space-y-1">
+      <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
         <p className="text-xs uppercase tracking-wider text-sidebar-foreground/50 mb-3 px-3">Main</p>
         {navItems.map((item) => (
           <button
@@ -62,8 +62,8 @@ export function Sidebar() {
             className={cn(
               'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200',
               isActive(item.path)
-                ? 'bg-sidebar-accent text-primary'
-                : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
+                ? 'bg-primary text-primary-foreground shadow-md'
+                : 'text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground'
             )}
           >
             <item.icon className="w-5 h-5" />
@@ -80,11 +80,11 @@ export function Sidebar() {
               className={cn(
                 'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200',
                 isActive(item.path)
-                  ? 'bg-sidebar-accent text-sidebar-foreground'
-                  : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
+                  ? 'bg-primary text-primary-foreground shadow-md'
+                  : 'text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground'
               )}
             >
-              <item.icon className={cn('w-5 h-5', item.color)} />
+              <item.icon className={cn('w-5 h-5', !isActive(item.path) && item.color)} />
               {item.label}
             </button>
           ))}
