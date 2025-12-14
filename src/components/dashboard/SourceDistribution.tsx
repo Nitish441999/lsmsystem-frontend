@@ -1,8 +1,8 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
-import { useAppSelector } from '@/hooks/useAppDispatch';
+import { useLeads } from '@/contexts/LeadsContext';
 
 export function SourceDistribution() {
-  const leads = useAppSelector((state) => state.leads.leads);
+  const { leads } = useLeads();
 
   const data = [
     { name: 'Website', value: leads.filter((l) => l.source === 'website').length, color: 'hsl(199, 89%, 48%)' },

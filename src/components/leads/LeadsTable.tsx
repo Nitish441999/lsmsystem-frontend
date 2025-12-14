@@ -19,12 +19,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { SourceBadge, StatusBadge } from './LeadBadges';
-import { useAppSelector } from '@/hooks/useAppDispatch';
+import { useLeads } from '@/contexts/LeadsContext';
 import { LeadDetailsDialog } from './LeadDetailsDialog';
 import { Lead } from '@/types/lead';
 
 export function LeadsTable() {
-  const filteredLeads = useAppSelector((state) => state.leads.filteredLeads);
+  const { filteredLeads } = useLeads();
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 

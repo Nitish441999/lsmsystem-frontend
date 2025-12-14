@@ -1,15 +1,14 @@
 import { useEffect } from 'react';
-import { useAppDispatch } from '@/hooks/useAppDispatch';
-import { setSourceFilter } from '@/store/leadSlice';
+import { useLeads } from '@/contexts/LeadsContext';
 import { LeadFilters } from '@/components/leads/LeadFilters';
 import { LeadsTable } from '@/components/leads/LeadsTable';
 
 export default function MetaLeads() {
-  const dispatch = useAppDispatch();
+  const { setSourceFilter } = useLeads();
 
   useEffect(() => {
-    dispatch(setSourceFilter('meta'));
-  }, [dispatch]);
+    setSourceFilter('meta');
+  }, [setSourceFilter]);
 
   return (
     <div className="space-y-6">

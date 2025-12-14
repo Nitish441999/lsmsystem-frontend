@@ -1,11 +1,11 @@
-import { useAppSelector } from '@/hooks/useAppDispatch';
+import { useLeads } from '@/contexts/LeadsContext';
 import { format } from 'date-fns';
-import { SourceBadge, StatusBadge } from './LeadBadges';
+import { SourceBadge } from './LeadBadges';
 import { Clock, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export function RecentLeads() {
-  const leads = useAppSelector((state) => state.leads.leads);
+  const { leads } = useLeads();
   const recentLeads = leads.slice(0, 5);
 
   return (

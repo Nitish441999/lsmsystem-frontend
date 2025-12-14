@@ -1,16 +1,14 @@
 import { useEffect } from 'react';
-import { useAppDispatch } from '@/hooks/useAppDispatch';
-import { setSourceFilter } from '@/store/leadSlice';
+import { useLeads } from '@/contexts/LeadsContext';
 import { LeadFilters } from '@/components/leads/LeadFilters';
 import { LeadsTable } from '@/components/leads/LeadsTable';
 
 export default function AllLeads() {
-  const dispatch = useAppDispatch();
+  const { setSourceFilter } = useLeads();
 
   useEffect(() => {
-    // Clear source filter to show all leads
-    dispatch(setSourceFilter(null));
-  }, [dispatch]);
+    setSourceFilter('all');
+  }, [setSourceFilter]);
 
   return (
     <div className="space-y-6">
