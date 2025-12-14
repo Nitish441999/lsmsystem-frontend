@@ -9,14 +9,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useAppDispatch } from '@/hooks/useAppDispatch';
-import { setSearchQuery } from '@/store/leadSlice';
+import { useLeads } from '@/contexts/LeadsContext';
 
 export function Header() {
-  const dispatch = useAppDispatch();
+  const { setSearchQuery } = useLeads();
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setSearchQuery(e.target.value));
+    setSearchQuery(e.target.value);
   };
 
   return (
@@ -47,7 +46,7 @@ export function Header() {
               <span className="font-medium">Admin</span>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
+          <DropdownMenuContent align="end" className="w-56 bg-popover border-border">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Profile</DropdownMenuItem>

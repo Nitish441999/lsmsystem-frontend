@@ -7,16 +7,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useAppDispatch, useAppSelector } from '@/hooks/useAppDispatch';
-import { setSourceFilter, setStatusFilter } from '@/store/leadSlice';
+import { useLeads } from '@/contexts/LeadsContext';
 import { LeadSource, LeadStatus } from '@/types/lead';
 import { exportToExcel, exportToPDF } from '@/lib/exportUtils';
 import { useLocation } from 'react-router-dom';
 
 export function LeadFilters() {
-  const dispatch = useAppDispatch();
   const location = useLocation();
-  const { selectedSource, selectedStatus, filteredLeads } = useAppSelector((state) => state.leads);
+  const { selectedSource, selectedStatus, filteredLeads, setSourceFilter, setStatusFilter } = useLeads();
 
   const getExportTitle = () => {
     switch (location.pathname) {
@@ -62,12 +60,12 @@ export function LeadFilters() {
 
       <Select
         value={selectedSource}
-        onValueChange={(value) => dispatch(setSourceFilter(value as LeadSource | 'all'))}
+        onValueChange={(value) => setSourceFilter(value as LeadSource | 'all')}
       >
         <SelectTrigger className="w-[140px]">
           <SelectValue placeholder="Source" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="bg-popover border-border">
           <SelectItem value="all">All Sources</SelectItem>
           <SelectItem value="website">Website</SelectItem>
           <SelectItem value="meta">Meta Ads</SelectItem>
@@ -77,12 +75,12 @@ export function LeadFilters() {
 
       <Select
         value={selectedStatus}
-        onValueChange={(value) => dispatch(setStatusFilter(value as LeadStatus | 'all'))}
+        onValueChange={(value) => setStatusFilter(value as LeadStatus | 'all')}
       >
         <SelectTrigger className="w-[140px]">
           <SelectValue placeholder="Status" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="bg-popover border-border">
           <SelectItem value="all">All Statuses</SelectItem>
           <SelectItem value="new">New</SelectItem>
           <SelectItem value="contacted">Contacted</SelectItem>

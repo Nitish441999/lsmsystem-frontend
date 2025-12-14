@@ -1,5 +1,5 @@
 import { format } from 'date-fns';
-import { Mail, Phone, Building2, Calendar, Tag, Globe, MapPin } from 'lucide-react';
+import { Mail, Phone, Building2, Calendar, Tag } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -15,8 +15,7 @@ import {
 } from '@/components/ui/select';
 import { SourceBadge } from './LeadBadges';
 import { Lead, LeadStatus } from '@/types/lead';
-import { useAppDispatch } from '@/hooks/useAppDispatch';
-import { updateLead } from '@/store/leadSlice';
+import { useLeads } from '@/contexts/LeadsContext';
 
 interface LeadDetailsDialogProps {
   lead: Lead | null;
@@ -33,12 +32,12 @@ const statusOptions: { value: LeadStatus; label: string; color: string }[] = [
 ];
 
 export function LeadDetailsDialog({ lead, open, onOpenChange }: LeadDetailsDialogProps) {
-  const dispatch = useAppDispatch();
+  const { updateLead } = useLeads();
 
   if (!lead) return null;
 
   const handleStatusChange = (newStatus: LeadStatus) => {
-    dispatch(updateLead({ ...lead, status: newStatus }));
+    updateLead({ ...lead, status: newStatus });
   };
 
   const getStatusColor = (status: LeadStatus) => {

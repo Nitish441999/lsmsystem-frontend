@@ -1,9 +1,9 @@
 import { Users, Globe, Facebook, Chrome, TrendingUp, UserCheck } from 'lucide-react';
 import { StatCard } from './StatCard';
-import { useAppSelector } from '@/hooks/useAppDispatch';
+import { useLeads } from '@/contexts/LeadsContext';
 
 export function StatsGrid() {
-  const leads = useAppSelector((state) => state.leads.leads);
+  const { leads } = useLeads();
 
   const stats = {
     total: leads.length,
