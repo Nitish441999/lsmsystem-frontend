@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { 
   LayoutDashboard, 
   Users, 
@@ -9,9 +10,15 @@ import {
   Globe,
   Facebook,
   Chrome,
-  LogOut
+  LogOut,
+  X
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 
 const navItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/' },
@@ -26,15 +33,32 @@ const sourceItems = [
   { id: 'google', label: 'Google Ads', icon: Chrome, color: 'text-source-google', path: '/leads/google' },
 ];
 
+const mockNotifications = [
+  { id: '1', title: 'New lead from Website', message: 'John Doe submitted a contact form', time: '2 min ago', read: false },
+  { id: '2', title: 'Meta Ads campaign update', message: 'Summer Sale campaign received 5 new leads', time: '15 min ago', read: false },
+  { id: '3', title: 'Google Ads lead', message: 'Sarah Johnson signed up via search ad', time: '1 hour ago', read: false },
+];
+
 export function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [notifications, setNotifications] = useState(mockNotifications);
 
   const isActive = (path: string) => {
     if (path === '/') {
       return location.pathname === '/';
     }
     return location.pathname === path;
+  };
+
+  const unreadCount = notifications.filter(n => !n.read).length;
+
+  const markAsRead = (id: string) => {
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+  };
+
+  const clearNotification = (id: string) => {
+    setNotifications(prev => prev.filter(n => n.id !== id));
   };
 
   return (
@@ -93,14 +117,68 @@ export function Sidebar() {
 
       {/* Notifications and Profile */}
       <div className="p-4 border-t border-sidebar-border space-y-2">
-        <Button 
-          variant="ghost" 
-          className="w-full justify-start text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
-        >
-          <Bell className="w-5 h-5 mr-3" />
-          Notifications
-          <span className="ml-auto bg-destructive text-destructive-foreground text-xs rounded-full px-2 py-0.5">3</span>
-        </Button>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button 
+              variant="ghost" 
+              className="w-full justify-start text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
+            >
+              <Bell className="w-5 h-5 mr-3" />
+              Notifications
+              {unreadCount > 0 && (
+                <span className="ml-auto bg-destructive text-destructive-foreground text-xs rounded-full px-2 py-0.5">
+                  {unreadCount}
+                </span>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent 
+            side="right" 
+            align="end" 
+            className="w-80 p-0 bg-card border-border"
+          >
+            <div className="p-3 border-b border-border">
+              <h3 className="font-semibold text-foreground">Notifications</h3>
+            </div>
+            <div className="max-h-80 overflow-y-auto">
+              {notifications.length === 0 ? (
+                <p className="p-4 text-sm text-muted-foreground text-center">No notifications</p>
+              ) : (
+                notifications.map((notification) => (
+                  <div 
+                    key={notification.id}
+                    onClick={() => markAsRead(notification.id)}
+                    className={cn(
+                      'p-3 border-b border-border last:border-0 cursor-pointer hover:bg-muted/50 transition-colors',
+                      !notification.read && 'bg-primary/5'
+                    )}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1">
+                        <p className={cn('text-sm font-medium text-foreground', !notification.read && 'font-semibold')}>
+                          {notification.title}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">{notification.message}</p>
+                        <p className="text-xs text-muted-foreground/70 mt-1">{notification.time}</p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6 shrink-0"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          clearNotification(notification.id);
+                        }}
+                      >
+                        <X className="w-3 h-3" />
+                      </Button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </PopoverContent>
+        </Popover>
         <Button 
           variant="ghost" 
           className="w-full justify-start text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
