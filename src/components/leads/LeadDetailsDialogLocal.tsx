@@ -15,12 +15,12 @@ import {
 } from '@/components/ui/select';
 import { SourceBadge } from './LeadBadges';
 import { Lead, LeadStatus } from '@/types/lead';
-import { useLeads } from '@/contexts/LeadsContext';
 
-interface LeadDetailsDialogProps {
+interface LeadDetailsDialogLocalProps {
   lead: Lead | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onUpdateLead: (lead: Lead) => void;
 }
 
 const statusOptions: { value: LeadStatus; label: string; color: string }[] = [
@@ -31,13 +31,11 @@ const statusOptions: { value: LeadStatus; label: string; color: string }[] = [
   { value: 'lost', label: 'Lost', color: 'bg-red-500' },
 ];
 
-export function LeadDetailsDialog({ lead, open, onOpenChange }: LeadDetailsDialogProps) {
-  const { updateLead } = useLeads();
-
+export function LeadDetailsDialogLocal({ lead, open, onOpenChange, onUpdateLead }: LeadDetailsDialogLocalProps) {
   if (!lead) return null;
 
   const handleStatusChange = (newStatus: LeadStatus) => {
-    updateLead({ ...lead, status: newStatus });
+    onUpdateLead({ ...lead, status: newStatus });
   };
 
   const getStatusColor = (status: LeadStatus) => {

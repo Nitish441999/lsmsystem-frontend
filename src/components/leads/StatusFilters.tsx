@@ -7,48 +7,35 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useLeads } from '@/contexts/LeadsContext';
-import { LeadSource, LeadStatus } from '@/types/lead';
+import { LeadStatus, Lead } from '@/types/lead';
 import { exportToExcel, exportToPDF } from '@/lib/exportUtils';
-import { useLocation } from 'react-router-dom';
 
-export function LeadFilters() {
-  const location = useLocation();
-  const { selectedSource, selectedStatus, filteredLeads, setSourceFilter, setStatusFilter } = useLeads();
+interface StatusFiltersProps {
+  selectedStatus: LeadStatus | 'all';
+  onStatusChange: (status: LeadStatus | 'all') => void;
+  leads: Lead[];
+  title: string;
+  filename: string;
+}
 
-  const getExportTitle = () => {
-    switch (location.pathname) {
-      case '/leads/website':
-        return 'Website Leads';
-      case '/leads/meta':
-        return 'Meta Ads Leads';
-      case '/leads/google':
-        return 'Google Ads Leads';
-      default:
-        return 'All Leads';
-    }
-  };
-
+export function StatusFilters({
+  selectedStatus,
+  onStatusChange,
+  leads,
+  title,
+  filename,
+}: StatusFiltersProps) {
   const getFilename = () => {
     const date = new Date().toISOString().split('T')[0];
-    switch (location.pathname) {
-      case '/leads/website':
-        return `website-leads-${date}`;
-      case '/leads/meta':
-        return `meta-leads-${date}`;
-      case '/leads/google':
-        return `google-leads-${date}`;
-      default:
-        return `all-leads-${date}`;
-    }
+    return `${filename}-${date}`;
   };
 
   const handleExportExcel = () => {
-    exportToExcel(filteredLeads, getFilename());
+    exportToExcel(leads, getFilename());
   };
 
   const handleExportPDF = () => {
-    exportToPDF(filteredLeads, getFilename(), getExportTitle());
+    exportToPDF(leads, getFilename(), title);
   };
 
   return (
@@ -59,23 +46,8 @@ export function LeadFilters() {
       </div>
 
       <Select
-        value={selectedSource}
-        onValueChange={(value) => setSourceFilter(value as LeadSource | 'all')}
-      >
-        <SelectTrigger className="w-[140px]">
-          <SelectValue placeholder="Source" />
-        </SelectTrigger>
-        <SelectContent className="bg-popover border-border">
-          <SelectItem value="all">All Sources</SelectItem>
-          <SelectItem value="website">Website</SelectItem>
-          <SelectItem value="meta">Meta Ads</SelectItem>
-          <SelectItem value="google">Google Ads</SelectItem>
-        </SelectContent>
-      </Select>
-
-      <Select
         value={selectedStatus}
-        onValueChange={(value) => setStatusFilter(value as LeadStatus | 'all')}
+        onValueChange={(value) => onStatusChange(value as LeadStatus | 'all')}
       >
         <SelectTrigger className="w-[140px]">
           <SelectValue placeholder="Status" />

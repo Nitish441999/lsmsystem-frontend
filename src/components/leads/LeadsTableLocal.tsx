@@ -19,12 +19,15 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { SourceBadge, StatusBadge } from './LeadBadges';
-import { useLeads } from '@/contexts/LeadsContext';
-import { LeadDetailsDialog } from './LeadDetailsDialog';
+import { LeadDetailsDialogLocal } from './LeadDetailsDialogLocal';
 import { Lead } from '@/types/lead';
 
-export function LeadsTable() {
-  const { filteredLeads } = useLeads();
+interface LeadsTableLocalProps {
+  leads: Lead[];
+  onUpdateLead: (lead: Lead) => void;
+}
+
+export function LeadsTableLocal({ leads, onUpdateLead }: LeadsTableLocalProps) {
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -49,7 +52,7 @@ export function LeadsTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredLeads.map((lead, index) => (
+            {leads.map((lead, index) => (
               <TableRow 
                 key={lead.id} 
                 className="hover:bg-secondary/50 transition-colors cursor-pointer"
@@ -121,17 +124,18 @@ export function LeadsTable() {
           </TableBody>
         </Table>
         
-        {filteredLeads.length === 0 && (
+        {leads.length === 0 && (
           <div className="py-12 text-center">
             <p className="text-muted-foreground">No leads found matching your criteria.</p>
           </div>
         )}
       </div>
 
-      <LeadDetailsDialog 
+      <LeadDetailsDialogLocal 
         lead={selectedLead} 
         open={dialogOpen} 
-        onOpenChange={setDialogOpen} 
+        onOpenChange={setDialogOpen}
+        onUpdateLead={onUpdateLead}
       />
     </>
   );
