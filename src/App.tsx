@@ -3,7 +3,6 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { LeadsProvider } from "@/contexts/LeadsContext";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import Dashboard from "./pages/Dashboard";
 import AllLeads from "./pages/AllLeads";
@@ -21,22 +20,20 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <LeadsProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route element={<DashboardLayout />}>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/alleads" element={<AllLeads />} />
-              <Route path="/analytics" element={<Analytics />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/leads/website" element={<WebsiteLeads />} />
-              <Route path="/leads/meta" element={<MetaLeads />} />
-              <Route path="/leads/google" element={<GoogleLeads />} />
-            </Route>
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </LeadsProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<DashboardLayout />}>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/alleads" element={<AllLeads />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/leads/website" element={<WebsiteLeads />} />
+            <Route path="/leads/meta" element={<MetaLeads />} />
+            <Route path="/leads/google" element={<GoogleLeads />} />
+          </Route>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
 );

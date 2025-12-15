@@ -9,15 +9,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useLeads } from '@/contexts/LeadsContext';
 
 export function Header() {
-  const { setSearchQuery } = useLeads();
-
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-  };
-
   return (
     <header className="h-16 bg-card border-b border-border px-6 flex items-center justify-between sticky top-0 z-40">
       <div className="flex items-center gap-4 flex-1 max-w-md">
@@ -26,7 +19,6 @@ export function Header() {
           <Input
             placeholder="Search leads by name, email, or company..."
             className="pl-10 bg-secondary border-0"
-            onChange={handleSearch}
           />
         </div>
       </div>
