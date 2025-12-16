@@ -26,7 +26,6 @@ const App = () => (
             <Route path="/" element={<Dashboard />} />
             <Route path="/alleads" element={<AllLeads />} />
             <Route path="/analytics" element={<Analytics />} />
-            <Route path="/settings" element={<Settings />} />
             <Route path="/leads/website" element={<WebsiteLeads />} />
             <Route path="/leads/meta" element={<MetaLeads />} />
             <Route path="/leads/google" element={<GoogleLeads />} />

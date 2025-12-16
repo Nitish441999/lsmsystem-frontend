@@ -1,12 +1,17 @@
-export type LeadSource = 'website' | 'meta' | 'google';
+export type LeadSource = "website" | "meta" | "google";
 
-export type LeadStatus = 'new' | 'contacted' | 'qualified' | 'converted' | 'lost';
+export type LeadStatus =
+  | "new"
+  | "contacted"
+  | "qualified"
+  | "converted"
+  | "lost";
 
 export interface Lead {
-  id: string;
+  _id: string;
   name: string;
   email: string;
-  phone: string;
+  contact: string;
   company?: string;
   source: LeadSource;
   campaign?: string;

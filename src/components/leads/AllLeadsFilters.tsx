@@ -1,20 +1,20 @@
-import { Filter, FileSpreadsheet, FileText, Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Filter, FileSpreadsheet, FileText, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { LeadSource, LeadStatus, Lead } from '@/types/lead';
-import { exportToExcel, exportToPDF } from '@/lib/exportUtils';
+} from "@/components/ui/select";
+import { LeadSource, LeadStatus, Lead } from "@/types/lead";
+import { exportToExcel, exportToPDF } from "@/lib/exportUtils";
 
 interface AllLeadsFiltersProps {
-  selectedSource: LeadSource | 'all';
-  selectedStatus: LeadStatus | 'all';
-  onSourceChange: (source: LeadSource | 'all') => void;
-  onStatusChange: (status: LeadStatus | 'all') => void;
+  selectedSource: LeadSource | "all";
+  selectedStatus: LeadStatus | "all";
+  onSourceChange: (source: LeadSource | "all") => void;
+  onStatusChange: (status: LeadStatus | "all") => void;
   leads: Lead[];
   title: string;
   filename: string;
@@ -30,7 +30,7 @@ export function AllLeadsFilters({
   filename,
 }: AllLeadsFiltersProps) {
   const getFilename = () => {
-    const date = new Date().toISOString().split('T')[0];
+    const date = new Date().toISOString().split("T")[0];
     return `${filename}-${date}`;
   };
 
@@ -46,12 +46,14 @@ export function AllLeadsFilters({
     <div className="flex flex-wrap items-center gap-3">
       <div className="flex items-center gap-2">
         <Filter className="w-4 h-4 text-muted-foreground" />
-        <span className="text-sm font-medium text-muted-foreground">Filters:</span>
+        <span className="text-sm font-medium text-muted-foreground">
+          Filters:
+        </span>
       </div>
 
       <Select
         value={selectedSource}
-        onValueChange={(value) => onSourceChange(value as LeadSource | 'all')}
+        onValueChange={(value) => onSourceChange(value as LeadSource | "all")}
       >
         <SelectTrigger className="w-[140px]">
           <SelectValue placeholder="Source" />
@@ -66,7 +68,7 @@ export function AllLeadsFilters({
 
       <Select
         value={selectedStatus}
-        onValueChange={(value) => onStatusChange(value as LeadStatus | 'all')}
+        onValueChange={(value) => onStatusChange(value as LeadStatus | "all")}
       >
         <SelectTrigger className="w-[140px]">
           <SelectValue placeholder="Status" />
@@ -89,10 +91,6 @@ export function AllLeadsFilters({
         <Button variant="outline" size="sm" onClick={handleExportPDF}>
           <FileText className="w-4 h-4 mr-2" />
           PDF
-        </Button>
-        <Button size="sm">
-          <Plus className="w-4 h-4 mr-2" />
-          Add Lead
         </Button>
       </div>
     </div>

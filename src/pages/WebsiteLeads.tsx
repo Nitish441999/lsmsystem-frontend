@@ -1,62 +1,37 @@
-import { useState } from 'react';
-import { Lead, LeadStatus } from '@/types/lead';
-import { LeadsTableLocal } from '@/components/leads/LeadsTableLocal';
-import { StatusFilters } from '@/components/leads/StatusFilters';
-
-const mockLeads: Lead[] = [
-  {
-    id: '1',
-    name: 'Sarah Johnson',
-    email: 'sarah.johnson@techcorp.com',
-    phone: '+1 (555) 123-4567',
-    company: 'TechCorp Inc.',
-    source: 'website',
-    service: 'Digital Marketing',
-    status: 'new',
-    createdAt: new Date('2024-12-13T10:30:00'),
-    notes: 'Interested in full-service digital marketing package',
-  },
-  {
-    id: '5',
-    name: 'Lisa Thompson',
-    email: 'lisa.t@retailplus.com',
-    phone: '+1 (555) 567-8901',
-    company: 'RetailPlus',
-    source: 'website',
-    service: 'E-commerce Solutions',
-    status: 'new',
-    createdAt: new Date('2024-12-12T11:00:00'),
-  },
-  {
-    id: '8',
-    name: 'Robert Brown',
-    email: 'rbrown@manufacturing.co',
-    phone: '+1 (555) 890-1234',
-    company: 'Manufacturing Co',
-    source: 'website',
-    service: 'Brand Strategy',
-    status: 'new',
-    createdAt: new Date('2024-12-10T14:45:00'),
-  },
-];
+import { useEffect, useState } from "react";
+import { LeadStatus } from "@/types/lead";
+import { LeadsTableLocal } from "@/components/leads/LeadsTableLocal";
+import { StatusFilters } from "@/components/leads/StatusFilters";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { RootState } from "../store";
+import { fetchWebsiteLeads } from "../fethure/website/websiteSlice";
 
 export default function WebsiteLeads() {
-  const [leads, setLeads] = useState<Lead[]>(mockLeads);
-  const [selectedStatus, setSelectedStatus] = useState<LeadStatus | 'all'>('all');
+  const [selectedStatus, setSelectedStatus] = useState<LeadStatus | "all">(
+    "all"
+  );
 
-  const filteredLeads = leads.filter((lead) => {
-    return selectedStatus === 'all' || lead.status === selectedStatus;
-  });
+  const dispatch = useAppDispatch();
 
-  const handleUpdateLead = (updatedLead: Lead) => {
-    setLeads((prev) => prev.map((lead) => (lead.id === updatedLead.id ? updatedLead : lead)));
-  };
+  const { leads, loading, error } = useAppSelector(
+    (state: RootState) => state.websiteLeads
+  );
+
+  useEffect(() => {
+    dispatch(fetchWebsiteLeads());
+  }, [dispatch]);
+
+  const filteredLeads = leads.filter(
+    (lead) => selectedStatus === "all" || lead.status === selectedStatus
+  );
 
   return (
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-foreground">Website Leads</h2>
-        <p className="text-muted-foreground">Leads captured from your website forms.</p>
+        <p className="text-muted-foreground">
+          Leads captured from your website forms.
+        </p>
       </div>
 
       <StatusFilters
@@ -66,7 +41,14 @@ export default function WebsiteLeads() {
         title="Website Leads"
         filename="website-leads"
       />
-      <LeadsTableLocal leads={filteredLeads} onUpdateLead={handleUpdateLead} />
+
+      <LeadsTableLocal leads={filteredLeads} />
+
+      {loading && (
+        <p className="text-sm text-muted-foreground">Loading leads...</p>
+      )}
+
+      {error && <p className="text-sm text-destructive">{error}</p>}
     </div>
   );
 }
