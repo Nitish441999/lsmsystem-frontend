@@ -27,53 +27,58 @@ import {
   addWebsiteLead,
   deleteWebsiteLead,
 } from "@/fethure/website/websiteSlice";
-
 import {
   addGoogleLead,
   deleteGoogleLead,
 } from "@/fethure/googleAdds/googleAddSlice";
-
 import { addMetaLead, deleteMetaLead } from "@/fethure/metaAdds/metaAddSlice";
 
 import { useAppDispatch } from "../../store/hooks";
 import { socket } from "@/utils/socket";
+import { toast } from "react-toastify";
 
 interface LeadsTableLocalProps {
   leads: Lead[];
+  showActions?: boolean;
+  enableRowClick?: boolean;
 }
 
-export function LeadsTableLocal({ leads }: LeadsTableLocalProps) {
+export function LeadsTableLocal({
+  leads,
+  showActions = true,
+  enableRowClick = true,
+}: LeadsTableLocalProps) {
   const dispatch = useAppDispatch();
 
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleViewDetails = (lead: Lead) => {
+    if (!enableRowClick) return;
     setSelectedLead(lead);
     setDialogOpen(true);
   };
 
-  
   const handleDeleteLead = (e: React.MouseEvent, lead: Lead) => {
     e.stopPropagation();
-
     if (!lead?._id) return;
 
-    switch (lead.source) {
-      case "website":
-        dispatch(deleteWebsiteLead(lead._id));
-        break;
+    try {
+      switch (lead.source) {
+        case "website":
+          dispatch(deleteWebsiteLead(lead._id));
+          break;
+        case "google":
+          dispatch(deleteGoogleLead(lead._id));
+          break;
+        case "meta":
+          dispatch(deleteMetaLead(lead._id));
+          break;
+      }
 
-      case "google":
-        dispatch(deleteGoogleLead(lead._id));
-        break;
-
-      case "meta":
-        dispatch(deleteMetaLead(lead._id));
-        break;
-
-      default:
-        console.warn("Unknown lead source:", lead.source);
+      toast.success("Lead deleted successfully ✅");
+    } catch (error) {
+      toast.error("Failed to delete lead ❌");
     }
   };
 
@@ -99,7 +104,7 @@ export function LeadsTableLocal({ leads }: LeadsTableLocalProps) {
 
   return (
     <>
-      <div className="bg-card rounded-xl border border-border overflow-hidden animate-fade-in">
+      <div className="bg-card rounded-xl border border-border overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow>
@@ -109,7 +114,7 @@ export function LeadsTableLocal({ leads }: LeadsTableLocalProps) {
               <TableHead>Service</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Date</TableHead>
-              <TableHead className="w-10" />
+              {showActions && <TableHead className="w-10" />}
             </TableRow>
           </TableHeader>
 
@@ -117,12 +122,14 @@ export function LeadsTableLocal({ leads }: LeadsTableLocalProps) {
             {leads.map((lead) => (
               <TableRow
                 key={lead._id}
-                className="hover:bg-secondary/50 cursor-pointer"
+                className={`hover:bg-secondary/50 ${
+                  enableRowClick ? "cursor-pointer" : ""
+                }`}
                 onClick={() => handleViewDetails(lead)}
               >
                 <TableCell>
                   <div className="flex flex-col">
-                    <span className="font-medium">{lead.name}</span>
+                    <span className="font-medium capitalize">{lead.name}</span>
                     {lead.company && (
                       <span className="text-sm text-muted-foreground flex items-center gap-1">
                         <Building2 className="w-3 h-3" />
@@ -161,35 +168,38 @@ export function LeadsTableLocal({ leads }: LeadsTableLocalProps) {
                   </span>
                 </TableCell>
 
-                <TableCell onClick={(e) => e.stopPropagation()}>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <MoreHorizontal className="w-4 h-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
+                {showActions && (
+                  <TableCell onClick={(e) => e.stopPropagation()}>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <MoreHorizontal className="w-4 h-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
 
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
 
-                      <DropdownMenuItem onClick={() => handleViewDetails(lead)}>
-                        View Details
-                      </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => handleViewDetails(lead)}
+                          className=" cursor-pointer"
+                        >
+                          View Details
+                        </DropdownMenuItem>
 
-                      <DropdownMenuItem>Edit Lead</DropdownMenuItem>
+                        <DropdownMenuSeparator />
 
-                      <DropdownMenuSeparator />
-
-                      <DropdownMenuItem
-                        className="text-destructive"
-                        onClick={(e) => handleDeleteLead(e, lead)}
-                      >
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
+                        <DropdownMenuItem
+                          className="text-destructive cursor-pointer"
+                          onClick={(e) => handleDeleteLead(e, lead)}
+                        >
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                )}
               </TableRow>
             ))}
           </TableBody>

@@ -56,7 +56,11 @@ export default function AllLeads() {
         filename="all-leads"
       />
 
-      <LeadsTableLocal leads={filteredLeads} />
+      <LeadsTableLocal
+        leads={filteredLeads}
+        showActions={false}
+        enableRowClick={false}
+      />
     </div>
   );
 }

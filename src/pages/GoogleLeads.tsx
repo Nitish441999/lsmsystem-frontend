@@ -17,6 +17,8 @@ export default function GoogleLeads() {
     (state: RootState) => state.googleLeads
   );
 
+  console.log(leads);
+
   useEffect(() => {
     dispatch(fetchGoogleLeads());
   }, [dispatch]);

@@ -20,6 +20,7 @@ import { Lead, LeadStatus } from "@/types/lead";
 import { updateWebsiteLeadStatus } from "@/fethure/website/websiteSlice";
 import { updateGoogleLeadStatus } from "@/fethure/googleAdds/googleAddSlice";
 import { updateMetaLeadStatus } from "@/fethure/metaAdds/metaAddSlice";
+import { toast } from "react-toastify";
 
 import { useAppDispatch } from "../../store/hooks";
 
@@ -46,41 +47,49 @@ export function LeadDetailsDialogLocal({
 
   if (!lead) return null;
 
-  const handleStatusChange = (newStatus: LeadStatus) => {
+  const handleStatusChange = async (newStatus: LeadStatus) => {
     if (!lead?._id) return;
 
-    switch (lead.source) {
-      case "website":
-        dispatch(
-          updateWebsiteLeadStatus({
-            id: lead._id,
-            status: newStatus,
-          })
-        );
-        break;
+    try {
+      switch (lead.source) {
+        case "website":
+          await dispatch(
+            updateWebsiteLeadStatus({
+              id: lead._id,
+              status: newStatus,
+            })
+          ).unwrap();
+          break;
 
-      case "google":
-        dispatch(
-          updateGoogleLeadStatus({
-            id: lead._id,
-            status: newStatus,
-          })
-        );
-        break;
+        case "google":
+          await dispatch(
+            updateGoogleLeadStatus({
+              id: lead._id,
+              status: newStatus,
+            })
+          ).unwrap();
+          break;
 
-      case "meta":
-        dispatch(
-          updateMetaLeadStatus({
-            id: lead._id,
-            status: newStatus,
-          })
-        );
-        break;
+        case "meta":
+          await dispatch(
+            updateMetaLeadStatus({
+              id: lead._id,
+              status: newStatus,
+            })
+          ).unwrap();
+          break;
 
-      default:
-        console.warn("Unknown lead source:", lead.source);
+        default:
+          toast.error("Unknown lead source");
+          return;
+      }
+
+      toast.success(`Lead status updated to "${newStatus}" ✅`);
+      onOpenChange(false);
+    } catch (error) {
+      toast.error("Failed to update lead status ❌");
+      console.error("Status update error:", error);
     }
-    onOpenChange(false);
   };
 
   const getStatusColor = (status: LeadStatus) => {
