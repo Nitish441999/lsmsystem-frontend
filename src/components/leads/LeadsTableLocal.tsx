@@ -82,25 +82,25 @@ export function LeadsTableLocal({
     }
   };
 
-  useEffect(() => {
-    socket.on("websiteLeadCreated", (newLead: Lead) => {
-      dispatch(addWebsiteLead(newLead));
-    });
+  // useEffect(() => {
+  //   socket.on("websiteLeadCreated", (newLead: Lead) => {
+  //     dispatch(addWebsiteLead(newLead));
+  //   });
 
-    socket.on("googleLeadCreated", (newLead: Lead) => {
-      dispatch(addGoogleLead(newLead));
-    });
+  //   socket.on("googleLeadCreated", (newLead: Lead) => {
+  //     dispatch(addGoogleLead(newLead));
+  //   });
 
-    socket.on("metaLeadCreated", (newLead: Lead) => {
-      dispatch(addMetaLead(newLead));
-    });
+  //   socket.on("metaLeadCreated", (newLead: Lead) => {
+  //     dispatch(addMetaLead(newLead));
+  //   });
 
-    return () => {
-      socket.off("websiteLeadCreated");
-      socket.off("googleLeadCreated");
-      socket.off("metaLeadCreated");
-    };
-  }, [dispatch]);
+  //   return () => {
+  //     socket.off("websiteLeadCreated");
+  //     socket.off("googleLeadCreated");
+  //     socket.off("metaLeadCreated");
+  //   };
+  // }, [dispatch]);
 
   return (
     <>

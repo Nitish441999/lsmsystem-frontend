@@ -8,7 +8,11 @@ interface DashboardData {
   qualifiedLeads: number;
   convertedLeads: number;
   conversionRate: string;
-  sourceWise: { website: number; google: number; meta: number };
+  sourceWise: {
+    website: number;
+    google: number;
+    meta: number;
+  };
   latestLeads: Lead[];
   allLeads: Lead[];
 }
@@ -26,7 +30,11 @@ const initialState: DashboardState = {
   qualifiedLeads: 0,
   convertedLeads: 0,
   conversionRate: "0.00%",
-  sourceWise: { website: 0, google: 0, meta: 0 },
+  sourceWise: {
+    website: 0,
+    google: 0,
+    meta: 0,
+  },
   latestLeads: [],
   allLeads: [],
 };
@@ -48,7 +56,24 @@ export const fetchDashboard = createAsyncThunk<DashboardData>(
 const dashboardSlice = createSlice({
   name: "dashboard",
   initialState,
-  reducers: {},
+  reducers: {
+    addRealtimeLead(state, action: PayloadAction<Lead>) {
+      const lead = action.payload;
+
+      state.totalLeads += 1;
+
+      state.todayLeads += 1;
+
+      if (lead.source === "website") state.sourceWise.website += 1;
+      if (lead.source === "google") state.sourceWise.google += 1;
+      if (lead.source === "meta") state.sourceWise.meta += 1;
+
+      state.latestLeads.unshift(lead);
+      state.latestLeads = state.latestLeads.slice(0, 5);
+
+      state.allLeads.unshift(lead);
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchDashboard.pending, (state) => {
@@ -69,4 +94,7 @@ const dashboardSlice = createSlice({
   },
 });
 
+/* ---------------- EXPORTS ---------------- */
+
+export const { addRealtimeLead } = dashboardSlice.actions;
 export default dashboardSlice.reducer;

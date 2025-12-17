@@ -15,6 +15,7 @@ import NotFound from "./pages/NotFound";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { DashboardSocketListener } from "./components/DashboardSocketListener";
 
 const queryClient = new QueryClient();
 
@@ -34,7 +35,7 @@ const App = () => (
         draggable
         theme="light"
       />
-
+      <DashboardSocketListener />
       <BrowserRouter>
         <Routes>
           <Route element={<DashboardLayout />}>
